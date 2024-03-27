@@ -1,34 +1,25 @@
 import { useState } from 'react';
 import { searchForShows } from './../api/tvmaze';
+import SearchForm from '../components/SearchForm';
+
 import { searchForPeople } from './../api/tvmaze';
 
 const Home = () => {
-  const [searchStr, setSearchStr] = useState('');
   const [apiData, setApiData] = useState(null);
   const [apiDataError, setApiDataError] = useState(null);
-  const [searchOptoion, setSearchOption] = useState('shows');
 
-  const onSearchInputChange = ev => {
-    setSearchStr(ev.target.value);
-  };
-
-  const onRadioChange = ev => {
-    setSearchOption(ev.target.value);
-  };
-
-  const onSearch = async ev => {
-    ev.preventDefault();
-
+  const onSearch = async ({ q, searchOptoion }) => {
     try {
       setApiDataError(null);
 
+      let result;
+
       if (searchOptoion === 'shows') {
-        const result = await searchForShows(searchStr);
-        setApiData(result);
+        result = await searchForShows(q);
       } else {
-        const result = await searchForPeople(searchStr);
-        setApiData(result);
+        result = await searchForPeople(q);
       }
+      setApiData(result);
     } catch (error) {
       setApiDataError(error);
     }
@@ -50,33 +41,7 @@ const Home = () => {
 
   return (
     <div>
-      <form onSubmit={onSearch}>
-        <input type="text" value={searchStr} onChange={onSearchInputChange} />
-
-        <label htmlFor="">
-          Shows
-          <input
-            type="radio"
-            name="search-optiion"
-            value="shows"
-            checked={searchOptoion === 'shows'}
-            onChange={onRadioChange}
-          />
-        </label>
-
-        <label htmlFor="">
-          Actors
-          <input
-            type="radio"
-            name="search-optiion"
-            value="actors"
-            checked={searchOptoion === 'actors'}
-            onChange={onRadioChange}
-          />
-        </label>
-
-        <button type="submit">Search</button>
-      </form>
+      <SearchForm onSearch={onSearch} />
 
       <div>{renderApiData()}</div>
     </div>
