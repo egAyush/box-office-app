@@ -9,7 +9,6 @@ const Seasons = ({ seasons }) => {
       </p>
 
       <div>
-        hel
         {seasons.map(season => (
           <div key={season.id}>
             <p>Season: {season.number} </p>
